@@ -18,3 +18,23 @@ def send_telegram_message(message):
         return False
 
     return True
+
+
+def get_updates(offset=None):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
+
+    payload = {
+        "timeout": 1
+    }
+
+    if offset is not None:
+        payload["offset"] = offset
+
+    response = requests.get(url, params=payload, timeout=5)
+
+    if response.status_code != 200:
+        print("Telegram getUpdates error:", response.text)
+        return []
+
+    data = response.json()
+    return data.get("result", [])
