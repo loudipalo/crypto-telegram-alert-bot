@@ -1,6 +1,6 @@
-# Crypto Telegram Alert Bot
+# Crypto Telegram & Discord Alert Bot
 
-A Python Telegram bot that monitors Binance crypto price movements and sends Telegram alerts when a symbol moves beyond a configured percentage threshold.
+A Python alert bot that monitors Binance crypto price movements and sends alerts to Telegram and Discord when a symbol moves beyond a configured percentage threshold.
 
 This project was built as a reusable automation template: data source → Python logic → alert condition → Telegram notification.
 
@@ -12,6 +12,9 @@ This project was built as a reusable automation template: data source → Python
 * Uses cooldown logic to avoid spam
 * Stores private credentials safely with `.env`
 * Simple modular structure for learning and future expansion
+* Sends alerts to Telegram
+* Sends alerts to Discord using webhooks
+* Supports Telegram commands: `/status`, `/pause`, `/resume`, and `/help`
 
 ## Tech Stack
 
@@ -21,6 +24,7 @@ This project was built as a reusable automation template: data source → Python
 * Requests
 * python-dotenv
 * Git / GitHub
+* Discord Webhooks
 
 ## Project Structure
 
@@ -29,6 +33,7 @@ crypto-telegram-alert-bot/
 ├── main.py
 ├── config.py
 ├── telegram_bot.py
+├── discord_bot.py
 ├── binance_client.py
 ├── requirements.txt
 ├── .env.example
@@ -86,6 +91,7 @@ Add your Telegram credentials:
 ```env
 BOT_TOKEN=your_telegram_bot_token_here
 CHAT_ID=your_telegram_chat_id_here
+DISCORD_WEBHOOK_URL=your_discord_webhook_url_here
 ```
 
 Run the bot:
@@ -133,13 +139,17 @@ Automated alert by Kalu Bot. Not financial advice.
 
 ## Future Improvements
 
-* Add Telegram commands like `/start`, `/stop`, and `/settings`
-* Support custom symbols per user
-* Add volume spike alerts
-* Deploy the bot to run 24/7
-* Add logging
-* Add database support
-* Add multiple alert types
+## Future Improvements
+
+- Add full Discord bot commands
+- Add Telegram commands like `/settings`, `/add`, and `/remove`
+- Support custom symbols per user or community
+- Add volume spike alerts
+- Deploy the bot to run 24/7
+- Add logging for alerts and errors
+- Add database support for saved settings
+- Add multiple alert types
+- Add web dashboard for configuration
 
 ## Disclaimer
 
