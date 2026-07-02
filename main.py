@@ -12,6 +12,7 @@ from config import (
 from datetime import datetime
 from binance_client import get_prices
 from telegram_bot import send_telegram_message, get_updates
+from discord_bot import send_discord_message
 
 
 def calculate_percentage_change(old_price, new_price):
@@ -44,6 +45,23 @@ def format_alert(symbol, percentage_change, old_price, new_price):
     )
 
 
+def format_discord_alert(symbol, percentage_change, old_price, new_price):
+    direction_emoji = "🚀" if percentage_change > 0 else "🔻"
+    direction_text = "UP" if percentage_change > 0 else "DOWN"
+    current_time = datetime.now().strftime("%H:%M:%S")
+
+    return (
+        f"{direction_emoji} **CRYPTO MOVEMENT ALERT**\n\n"
+        f"**Symbol:** {symbol}\n"
+        f"**Direction:** {direction_text}\n"
+        f"**Move:** {percentage_change:.2f}% in {LOOKBACK_SECONDS // 60} min\n"
+        f"**Old Price:** {format_price(old_price)}\n"
+        f"**New Price:** {format_price(new_price)}\n"
+        f"**Time:** {current_time}\n\n"
+        f"*Automated alert by Simset Bot. Not financial advice.*"
+    )
+
+
 def should_send_alert(symbol, percentage_change, last_alert_times):
     current_time = time.time()
 
@@ -71,6 +89,7 @@ def get_old_price_from_history(history, target_time):
             break
 
     return old_price
+
 
 def format_status(alerts_paused):
     status = "⏸️ Paused" if alerts_paused else "✅ Running"
@@ -143,6 +162,11 @@ def main():
         "Monitoring Binance price movements..."
     )
 
+    send_discord_message(
+        "✅ **Crypto Alert Bot Started**\n\n"
+        "Monitoring Binance price movements..."
+    )
+
     print(f"Symbols: {SYMBOLS}")
     print(f"Check interval: {CHECK_INTERVAL_SECONDS}s")
     print(f"Lookback: {LOOKBACK_SECONDS}s")
@@ -188,14 +212,22 @@ def main():
             print(f"{symbol}: {percentage_change:.4f}% in {LOOKBACK_SECONDS // 60} min")
 
             if not alerts_paused and should_send_alert(symbol, percentage_change, last_alert_times):
-                message = format_alert(
+                telegram_message = format_alert(
                     symbol,
                     percentage_change,
                     old_price,
                     current_price
                 )
 
-                send_telegram_message(message)
+                discord_message = format_discord_alert(
+                    symbol,
+                    percentage_change,
+                    old_price,
+                    current_price
+                )
+
+                send_telegram_message(telegram_message)
+                send_discord_message(discord_message)
 
         time.sleep(CHECK_INTERVAL_SECONDS)
 
